@@ -15,38 +15,12 @@
 </template>
 
 <script>
+import db from "@/firebase/init";
 export default {
   name: "Index",
   data() {
     return {
-      recipes: [
-        {
-          id: 1,
-          title: "Jollof Rice",
-          slug: "jollof-rice",
-          ingredients: [
-            "Parboiled Rice",
-            "Water",
-            "Vegetable Oil",
-            "Diced Onion",
-            "Tomato sauce",
-            "Table Salt"
-          ]
-        },
-        {
-          id: 2,
-          title: "Fried Rice",
-          slug: "fried-rice",
-          ingredients: [
-            "White Rice",
-            "Water",
-            "Vegetable Oil",
-            "Diced Onion",
-            "Eggs",
-            "Carrots"
-          ]
-        }
-      ]
+      recipes: []
     };
   },
   methods: {
@@ -55,6 +29,19 @@ export default {
         return recipe.id != id;
       });
     }
+  },
+  created() {
+    //fetch data from firestore
+    db
+      .collection("Recipes")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let recipe = doc.data();
+          recipe.id = doc.id;
+          this.recipes.push(recipe);
+        });
+      });
   }
 };
 </script>
